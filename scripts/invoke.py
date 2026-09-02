@@ -78,27 +78,31 @@ def read_json(path: Path) -> dict[str, Any]:
 
 
 def load_api_key() -> str:
-    token = os.getenv("ANTHROPIC_AUTH_TOKEN")
-    if token:
-        return token
+    names = ("OPENROUTER_API_KEY", "ANTHROPIC_AUTH_TOKEN")
+    for name in names:
+        token = os.getenv(name)
+        if token:
+            return token
 
     settings_path = Path.home() / ".claude" / "settings.json"
     try:
         settings = json.loads(settings_path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
         raise UserError(
-            "ANTHROPIC_AUTH_TOKEN is not set and ~/.claude/settings.json does not exist"
+            "OPENROUTER_API_KEY is not set and ~/.claude/settings.json does not exist"
         ) from exc
     except (OSError, json.JSONDecodeError) as exc:
         raise UserError(f"Cannot read Claude settings from {settings_path}: {exc}") from exc
 
     env = settings.get("env") if isinstance(settings, dict) else None
-    token = env.get("ANTHROPIC_AUTH_TOKEN") if isinstance(env, dict) else None
-    if not isinstance(token, str) or not token:
-        raise UserError(
-            "No ANTHROPIC_AUTH_TOKEN found in the environment or ~/.claude/settings.json env"
-        )
-    return token
+    if isinstance(env, dict):
+        for name in names:
+            token = env.get(name)
+            if isinstance(token, str) and token:
+                return token
+    raise UserError(
+        "No OPENROUTER_API_KEY or ANTHROPIC_AUTH_TOKEN found in the environment or ~/.claude/settings.json env"
+    )
 
 
 def validate_manifest(manifest: dict[str, Any]) -> None:

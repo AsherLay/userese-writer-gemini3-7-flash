@@ -1,6 +1,6 @@
 interface:
   display_name: "Userese Writer · Gemini 3.7 Flash"
-  short_description: "用 Gemini 3.7 Flash 生成待核实的 Userese 文案提案"
+  short_description: "用 Gemini 3.7 Flash 生成待核实的 Userese 文案提案 / Write checkable Userese copy proposals with Gemini 3.7 Flash"
   default_prompt: "使用 $userese-writer-gemini3-7-flash 处理我已确认的 Userese brief，只生成 before/after 提案。"
 policy:
   allow_implicit_invocation: false

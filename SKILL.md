@@ -1,6 +1,10 @@
 ---
 name: userese-writer-gemini3-7-flash
-description: Userese 的可选文案 Writer。仅在用户明确点名后，通过 OpenRouter 调用 Gemini 3.7 Flash，把已确认的 userese-brief/v1 批次写成可核实的 before/after 提案；不重新决定受众、定位或结构，不直接修改产品文件。用于为 Userese 选择 Gemini Writer、比较不同 Writer，或处理已有的兼容 brief。
+license: MIT
+disable-model-invocation: true
+description: >-
+  Userese 的可选文案 Writer。仅在用户明确点名后，通过 OpenRouter 调用 Gemini 3.7 Flash，把已确认的 userese-brief/v1 批次写成可核实的 before/after 提案；不重新决定受众、定位或结构，不直接修改产品文件。
+  Optional Userese writer. Call Gemini 3.7 Flash via OpenRouter on a confirmed userese-brief/v1 and return checkable before/after copy. Better for English. Do not run unless the user names this skill.
 ---
 
 # Userese Writer: Gemini 3.7 Flash
@@ -27,13 +31,13 @@ python3 <skill-dir>/scripts/invoke.py brief.json result.json
 python3 <skill-dir>/scripts/render_report.py brief.json result.json before-after.md
 ```
 
-脚本调用 OpenRouter 的 OpenAI `chat/completions` 接口，模型 ID 为 `google/gemini-3.7-flash`，并使用 `response_format: json_schema`。默认 reasoning effort 为 `low`。
+脚本调用 OpenRouter 的 OpenAI `chat/completions` 接口，模型 ID 为 `google/gemini-3.7-flash`，并使用 `response_format: json_schema`。默认 reasoning effort 为 `low`。用户用英文说话时，按 README 的 English 启动提示回复。
 
 可用配置：
 
 - `--model` 或 `USERESE_WRITER_GEMINI_MODEL`
 - `--reasoning-effort low|medium|high` 或 `USERESE_WRITER_GEMINI_REASONING_EFFORT`
-- 认证优先读取当前进程的 `ANTHROPIC_AUTH_TOKEN`；不存在时读取 `~/.claude/settings.json` 的 `env.ANTHROPIC_AUTH_TOKEN`，与 Claude Code 共用同一密钥
+- 认证优先读取 `OPENROUTER_API_KEY`；没有则读 `ANTHROPIC_AUTH_TOKEN`（方便和 Claude Code 共用 OpenRouter 密钥）。环境里没有时，再读 `~/.claude/settings.json` 的 `env`
 
 旧环境变量 `WRITER_GEMINI_MODEL`、`WRITER_GEMINI_REASONING_EFFORT` 和 `WRITER_GEMINI_THINKING_LEVEL` 仍作为兼容回退。任何密钥都不得写进项目、批次、报告或终端输出。
 
